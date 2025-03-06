@@ -1,0 +1,101 @@
+{% extends 'common.html' %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>Signup</h2>
+
+    <form method="post" class="signup-form">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+        {% endif %}
+
+        {% for field in form %}
+        <div class="form-group">
+            <label>{{ field.label }}</label>
+            {{ field }}
+            
+            {% if field.errors %}
+                <div class="error-text">
+                    {{ field.errors }}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="signup-btn">Signup</button>
+    </form>
+</div>
+
+<style>
+    .signup-container {
+        max-width: 450px;
+        margin: 50px auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .signup-container h2 {
+        margin-bottom: 20px;
+        color: #004080;
+    }
+
+    .signup-form .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .signup-form label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .signup-form input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .signup-btn {
+        width: 100%;
+        background: #004080;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .signup-btn:hover {
+        background: #003366;
+    }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        background: rgba(255, 0, 0, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .error-text {
+        color: red;
+        font-size: 14px;
+    }
+</style>
+{% endblock %}
+
+

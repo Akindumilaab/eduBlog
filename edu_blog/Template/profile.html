@@ -1,0 +1,56 @@
+{% extends 'common.html' %}
+
+{% block content %}
+<div style="
+    max-width: 600px; 
+    margin: auto; 
+    background: rgba(0, 0, 0, 0.7); 
+    padding:20px; 
+    border-radius: 10px; 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+
+">
+    <h1 style="font-weight: 600;">{{ user.username }}'s Profile</h1>
+
+    <!-- Profile Picture -->
+    {% if user.profile.image %}
+        <img src="{{ user.profile.image.url }}" alt="Profile Picture" style="width: 50%; border-radius: 10px; margin-bottom: 15px;">
+    {% else %}
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" style="width: 100%; border-radius: 10px; margin-bottom: 15px;">
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_first_name" style="display: block; font-weight: 400; margin-top: 10px;">First Name:</label>
+        <input type="text" name="first_name" id="id_first_name" value="{{ user.first_name }}" 
+               style="width: 100%; padding: 10px; border-radius: 5px; border: none; outline: none;">
+
+        <label for="id_last_name" style="display: block; font-weight: 400; margin-top: 10px;">Last Name:</label>
+        <input type="text" name="last_name" id="id_last_name" value="{{ user.last_name }}" 
+               style="width: 100%; padding: 10px; border-radius: 5px; border: none; outline: none;">
+
+        <label for="id_email" style="display: block; font-weight: 400; margin-top: 10px;">Email Address:</label>
+        <input type="email" name="email" id="id_email" value="{{ user.email }}" 
+               style="width: 100%; padding: 10px; border-radius: 5px; border: none; outline: none;">
+
+        <label for="id_bio" style="display: block; font-weight: 400; margin-top: 10px;">Bio:</label>
+        <textarea name="bio" id="id_bio" rows="5" 
+                  style="width: 100%; padding: 10px; border-radius: 5px; border: none; outline: none;">{{ user.profile.bio }}</textarea>
+
+        <label for="id_profile_picture" style="display: block; font-weight: 400; margin-top: 10px;">Change Profile Picture:</label>
+        <input type="file" name="profile_picture" id="id_profile_picture" 
+               style="width: 100%; padding: 10px; border-radius: 5px; border: none; outline: none; background: white;">
+
+        <button type="submit" 
+                style="background: #ff6b81; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600; margin-top: 10px; transition: 0.3s;">
+            Update Profile
+        </button>
+    </form>
+
+    <div style="margin-top: 20px; font-size: 14px;">© 2025 Edu Blog | Designed by Bim ❤️</div>
+</div>
+{% endblock %}

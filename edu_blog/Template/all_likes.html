@@ -1,0 +1,17 @@
+{% extends 'common.html' %}
+
+{% block content %}
+<h2>All Likes</h2>
+<table border="1" style="width: 80%; margin: auto; text-align: center;">
+    <tr>
+        <th>Post Title</th>
+        <th>Liked By</th>
+    </tr>
+    {% for like in likes %}
+    <tr>
+        <td>{{ like.post.title }}</td>
+        <td>{{ like.user.username }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

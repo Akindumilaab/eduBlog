@@ -1,0 +1,21 @@
+{% extends 'common.html' %}
+
+{% block content %}
+<h2>All Comments</h2>
+<table border="1" style="width: 80%; margin: auto; text-align: center;">
+    <tr>
+        <th>Post Title</th>
+        <th>Comment</th>
+        <th>Commented By</th>
+        <th>Date</th>
+    </tr>
+    {% for comment in comments %}
+    <tr>
+        <td>{{ comment.post.title }}</td>
+        <td>{{ comment.text }}</td>
+        <td>{{ comment.user.username }}</td>
+        <td>{{ comment.created_at }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

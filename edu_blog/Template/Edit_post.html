@@ -1,0 +1,35 @@
+{% extends 'common.html' %}
+
+{% block content %}
+    <h2>Edit Post: {{ post.title }}</h2>
+
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Please fix the errors below:</strong>
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ field }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <!-- <button type="submit">Save Changes</button> -->
+        <button style="background-color: rgb(13, 0, 128); color: white; border: none; padding: 8px 15px; border-radius: 7px; margin-bottom: 10px;" class="approve-btn" type="submit">Save Changes</button>
+    </form>
+
+    <a href="{% url 'post_detail' post.id %}">← Back to Post</a>
+{% endblock %}
+
+
+
+
+
+
+
+    

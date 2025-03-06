@@ -1,0 +1,197 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Edu Blog</title>
+</head>
+<body>
+    <h1>Educational Psychology & Counselling Blog</h1>
+    <ul>
+        {% for post in posts %}
+            <li><strong>{{ post.title }}</strong> - {{ post.category }}</li>
+            <p>{{ post.content|truncatewords:30 }}</p>
+        {% endfor %}
+    </ul>
+</body>
+</html> -->
+
+{% comment %} {% extends 'common.html' %} {% endcomment %}
+
+{% comment %} {% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p>By {{ post.author }} | {{ post.created_at|date:"F j, Y" }}</p>
+
+{% if post.image %}
+<img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 100%; height: auto;">
+{% endif %}
+
+<p>{{ post.content }}</p>
+
+<!-- Approve Button (Only if Needed) -->
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Approve Post</button>
+</form>
+
+<br>
+<a href="{% url 'post_list' %}">← Back to Blog</a>
+{% endblock %} {% endcomment %}
+
+{% comment %} {% extends 'common.html' %} {% endcomment %}
+
+{% comment %} {% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="post-container">
+    <h2 class="post-title">{{ post.title }}</h2>
+    <p class="post-meta">By <strong>{{ post.author }}</strong> | {{ post.created_at|date:"F j, Y" }}</p>
+
+    {% if post.image %}
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="post-image">
+    {% else %}
+    <img src="" alt="{{ post.title }}" class="post-image">
+    {% endif %}
+
+    <p class="post-content">{{ post.content }}</p>
+
+    <!-- Approve Button (Only if Needed) -->
+    <form method="post" class="approve-form">
+        {% csrf_token %}
+        <button type="submit" class="approve-button">Approve Post</button>
+    </form>
+
+    <br>
+    <a href="{% url 'post_list' %}" class="back-link">← Back to Blog</a>
+</div>
+{% endblock %} {% endcomment %}
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="blog-container" style="padding: none;">
+        <header class="blog-header" style="background-color: rgb(219, 216, 216);">
+            <h1>{{ post.title }}</h1>
+            <p><strong>Article by {{ post.author.username }}</strong></p>
+            <p class="author">By {{ post.author }} | {{ post.created_at|date:"F j, Y" }}</p>
+        </header>
+
+        <div style="padding: 0px 15px;">
+            {% if post.image %}
+            <div class="blog-image" style="margin-top: 30px;">
+                <div style="display: flex; justify-content: center;">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}" height="300px" style="border-radius: 10px;">
+                </div>
+                
+                {% else %}
+                <img src="" alt="{{ post.title }}">
+            </div>
+            {% endif %}
+
+            <div class="blog-content" style="text-align: justify;">
+                <p>{{ post.content }}</p>
+            </div>
+
+
+            
+                        <!-- Approve/Disapprove Post Section (Only for Superusers and Staff) -->
+                        {% if user.is_superuser or user.is_staff %}
+                        <div class="approve-section">
+                            <form action="{% url 'Approve-disapprove-post' post.id %}" method="post">
+                                {% csrf_token %}
+                                <button 
+                                    style="background-color: {% if post.approved %} green {% else %} red {% endif %}; 
+                                        color: white; border: none; padding: 8px 15px; 
+                                        border-radius: 7px; margin-bottom: 10px; cursor: pointer;" 
+                                    class="approve-btn" 
+                                    type="submit">
+                                    {% if post.approved %} ✅ Disapprove Post {% else %}  Approve Post {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+
+            
+
+            {% if user == post.author %}
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button style="background-color: rgb(41, 41, 236); border: none; padding: 8px 25px; border-radius: 7px; margin-bottom: 10px;"><a style="color: white; text-decoration: none;" href="{% url 'edit-post' post.id %}">Edit</a></button>
+                <button style="background-color: rgb(210, 41, 41); border: none; padding: 8px 25px; border-radius: 7px; margin-bottom: 10px;"><a style="color: white; text-decoration: none;" href="{% url 'delete-post' post.id %}">Delete</a></button>
+            </div>
+            {% endif %}
+
+            <div co>
+                    <!-- <h2>{{ post.title }}</h2> -->
+                    <!-- <p>{{ post.content }}</p> -->
+                    <!-- <p>Author: {{ post.author.username }}</p> -->
+                    <!-- <p>Likes: {{ post.total_likes }}</p> -->
+                    <!-- <p>Comments: {{ post.total_comments }}</p> -->
+
+                     <!-- Like Button  -->
+                    <!-- <form action="{% url 'like_post' post.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">👍 Like</button>
+                    </form> -->
+                    <h3 style="">Likes👍</h3> 
+                    <form action="{% url 'like_post' post.id %}" method="POST">
+                        {% csrf_token %}
+                        <div style=>
+                            <button type="submit" style="border: none; background: none;  font-size: 18px; cursor: pointer;color: red;transition: transform 0.2s ease;">
+                                ❤️ {{ post.likes.count }}
+                            </button>
+                        </div>
+                    </form>
+                    
+                    
+
+                    <!-- Comments Section -->
+                    <!-- <h3>Comments</h3> -->
+                    <ul>
+                        {% for comment in post.comments.all %}
+                            <li>
+                                <strong>{{ comment.user.username }}</strong>: {{ comment.text }}
+                            </li>
+                        {% empty %}
+                            <!-- <li>No comments yet. Be the first to comment!</li> -->
+                        {% endfor %}
+                    </ul>
+
+                <!-- Add a Comment -->
+                {% if user.is_authenticated %}
+                <div  style="text-align: center;">
+                        <h3 style="">Add Comment</h3>  
+                    <form action="{% url 'add_comment' post.id %}" method="post">
+                    {% csrf_token %}
+                    <textarea name="text" rows="3" placeholder="Write your comment..." style="background-color: aqua;"></textarea>
+                    <br>
+                    <button type="submit" style="background-color: rgb(41, 158, 236); border: none; padding: 8px 25px; border-radius: 7px; margin-top: 10px;">Send</button>
+                    </form>
+                    {% else %}
+                    <p><a href="{% url 'login' %}">Log in</a> to leave a comment.</p>
+                </div>
+                {% endif %}
+
+            </div> 
+
+
+            <div class="back-link">
+                <a href="{% url 'post_list' %}">← Back to Blog</a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

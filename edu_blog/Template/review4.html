@@ -1,0 +1,93 @@
+
+{% extends 'common.html' %}
+
+{% block content %}
+<div>
+    <!-- Profile Section -->
+    
+
+    <!-- Blog Section -->
+    <div >
+        <h1>Welcome to the Educational Psychology & Counselling Blog</h1>
+        <p>Your go-to place for Study Techniques, Mental Health Tips, Career Guidance and Lot more...</p>
+    </div>
+
+    <!-- Blog Highlights -->
+    <div >
+        <h4> Blog Posts</h4>
+        <div>
+            {% for post in posts %}
+                <div>
+                    <div style="display: flex; border: 1px solid; justify-content: space-between;">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" class="card-img-top" alt="{{ post.title }}" height="150"> 
+                        {% endif %}
+                        <div class="card-body" style="border: 1px solid; width: 80%;">
+                            <h5 style="font-size: 18px; text-align: start; color: red;">{{ post.title }}</h5>
+                            <p class="card-text">{{ post.content|truncatewords:20 }}</p>
+                            <a href="{% url 'post_detail' post.id %}" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No posts yet!</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div>
+        <div>
+            <h2>Why We Are The Best</h2>
+           <p>At Educational Psychology & Counselling Blog, we are committed to providing top-quality educational content that empowers students, educators, and lifelong learners. Our blog stands out because we combine expert insights with practical strategies, ensuring that our readers get the best guidance on study techniques, mental well-being, and career planning.
+
+            What Makes Us Unique?
+            ✅ Expert-Backed Advice – Our content is created and reviewed by professionals in educational psychology and counseling.
+            ✅ Student-Centered Approach – We focus on real challenges students face and provide practical solutions.
+            ✅ Career & Academic Growth – Whether you need study tips or career guidance, we offer resources to help you succeed.
+            ✅ Mental Health Support – Learning isn’t just about academics; we also prioritize emotional and mental well-being.
+            ✅ Engaging & Actionable Content – Our posts are not just informative but also designed to inspire and motivate.
+            
+            Join our growing community of learners and educators who trust Educational Psychology & Counselling Blog to guide them on their educational journey.
+            
+            🚀 Stay ahead. Learn smarter. Grow stronger.
+            
+            
+         </p> 
+        </div>
+        
+
+
+    </div>
+    
+    <div >
+        <div>
+            {% if user.profile.image %}
+            <img src="{{ user.profile.image.url }}" alt="Profile Picture"style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; margin-top: 30px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"> 
+            {% else %}
+            <img src="https://via.placeholder.com/120" alt="Profile Picture">
+        </div>
+        {% endif %}
+        <div>
+            {% comment %} <h2> {{ user.username }}</h2> {% endcomment %}
+            <p> {{ user.username }},{{ user.profile.bio }}</p>
+        </div>
+    </div>
+
+
+
+
+    <!-- Call to Action -->
+    <div >
+        {% if user.is_authenticated %}
+            <a href="{% url 'post_list' %}" style="background-color: rgb(41, 158, 236); border: none; padding: 8px 25px; border-radius: 7px; margin-top: 30px;">Go to Blog</a>
+        {% else %}
+            <a href="{% url 'signup' %} " style="background-color: rgb(41, 41, 236); border: none; padding: 8px 25px; border-radius: 7px; margin-bottom: 15px;" >Sign Up</a>
+            <a href="{% url 'login' %}" style="background-color: rgba(41, 236, 135, 0.244); border: none; padding: 8px 25px; border-radius: 7px; margin-bottom: 15px;">Log In</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+

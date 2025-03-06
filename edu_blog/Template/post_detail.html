@@ -1,0 +1,247 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ post.title }}</title>
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+      .container {
+        background: white;
+        max-width: 800px;
+        margin: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .sec-container{
+        padding: 20px;
+      }
+      .blog-header{
+        background-color: rgb(219, 216, 216);
+        padding: 0px 20px;
+      }
+      .blog-content{
+        text-align: justify;
+      }
+      .image{
+        display: flex;
+        justify-content: center;
+      }
+      .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+      }
+      button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .approve {
+        background: #28a745;
+        color: white;
+      }
+      .edit {
+        background: #007bff;
+        color: white;
+      }
+      .edit a, .delete a {
+        text-decoration: none;
+        color: white;
+      }
+      .delete {
+        background: #dc3545;
+        color: white;
+      }
+      .likes {
+        display: flex;
+        align-items: center;
+        font-size: 18px;
+        margin: 10px 0;
+      }
+      .likes button {
+        margin-left: 8px;
+      }
+      .comment-section {
+        margin-top: 20px;
+      }
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      .send-btn {
+        display: block;
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      .send-btn:hover,
+      button:hover {
+        opacity: 0.8;
+      }
+      .send-div{
+        display: flex;
+        justify-content: end;
+      }
+      .back-link {
+        display: block;
+        margin-top: 20px;
+        color: #007bff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <header class="blog-header">
+        <h1>{{ post.title }}</h1>
+        <p>
+          <strong>Article by {{ post.author.username }}</strong>
+        </p>
+        <p class="author">By {{ post.author }} | {{ post.created_at|date:'F j, Y' }}</p>
+      </header>
+
+      <div class="sec-container">
+        {% if post.image %}
+          <div class="blog-image">
+            <div class="image">
+              <img src="{{ post.image.url }}" alt="{{ post.title }}" height="300px" style="border-radius: 10px;" />
+            </div>
+
+            {% else %}
+            <img src="" alt="{{ post.title }}" />
+          </div>
+        {% endif %}
+
+        <div class="blog-content">
+          <p>{{ post.content }}</p>
+        </div>
+
+        <div class="buttons">
+          <!-- Approve/Disapprove Post Section (Only for Superusers and Staff) -->
+          {% if user.is_superuser or user.is_staff %}
+            <div class="approve-section">
+              <form action="{% url 'Approve-disapprove-post' post.id %}" method="post">
+                {% csrf_token %}
+                <button style="background-color: {% if post.approved %}
+                     green
+                  {% else %}
+                     red
+                  {% endif %}; 
+                                 color: white; border: none; padding: 8px 15px; 
+                                 border-radius: 7px; margin-bottom: 10px; cursor: pointer;"
+                  class="approve-btn"
+                  type="submit">
+                  {% if post.approved %}
+                     ✅ Disapprove Post
+                  {% else %}
+                    Approve Post
+                  {% endif %}
+                </button>
+              </form>
+            </div>
+          {% endif %}
+
+          {% if user == post.author %}
+            <div>
+              <button class="edit"><a href="{% url 'edit-post' post.id %}">✏️ Edit</a></button>
+              <button class="delete"><a href="{% url 'delete-post' post.id %}">🗑️ Delete</a></button>
+            </div>
+          {% endif %}
+        </div>
+
+        <div co>
+          <!-- <h2>{{ post.title }}</h2> -->
+          <!-- <p>{{ post.content }}</p> -->
+          <!-- <p>Author: {{ post.author.username }}</p> -->
+          <!-- <p>Likes: {{ post.total_likes }}</p> -->
+          <!-- <p>Comments: {{ post.total_comments }}</p> -->
+
+          <!-- Like Button -->
+          <!--  <form action="{% url 'like_post' post.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">👍 Like</button>
+                    </form>  -->
+          {% comment %} <h3 style="">Likes👍</h3> {% endcomment %}
+          <form action="{% url 'like_post' post.id %}" method="POST">
+            {% csrf_token %}
+            <div class="likes">
+              <button type="submit">❤️ {{ post.likes.count }} Likes</button>
+            </div>
+          </form>
+
+          <!-- Comments Section -->
+          <!-- <h3>Comments</h3> -->
+          <ul>
+            {% for comment in post.comments.all %}
+              <li>
+                <strong>{{ comment.user.username }}</strong>: {{ comment.text }}
+              </li>
+            {% empty %}
+              <!-- <li>No comments yet. Be the first to comment!</li> -->
+            {% endfor %}
+          </ul>
+
+          <!-- Add a Comment -->
+          {% if user.is_authenticated %}
+            <div class="comment-section">
+              <h3 style="">Add Comment</h3>
+              <form action="{% url 'add_comment' post.id %}" method="post">
+                {% csrf_token %}
+                <textarea name="text" rows="3" placeholder="Write your comment..."></textarea>
+                <br />
+                <div class="send-div">
+                    <button type="submit" class="send-btn">Send</button>
+                </div>
+              </form>
+              {% else %}
+              <p>
+                <a href="{% url 'login' %}">Log in</a> to leave a comment.
+              </p>
+            </div>
+          {% endif %}
+        </div>
+
+        {% for comment in post.comments.all %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+          <p><strong>{{ comment.author.username }}</strong> says:</p>
+          <p>{{ comment.text }}</p>
+          
+          {% if user.is_superuser %}
+              <form action="{% url 'delete-comment' comment.id %}" method="post" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; border-radius: 5px;">❌ Delete</button>
+              </form>
+          {% endif %}
+      </div>
+  {% endfor %}
+
+
+        <div class="back-link">
+          <a href="{% url 'post_list' %}">← Back to Blog</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
