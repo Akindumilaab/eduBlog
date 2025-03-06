@@ -63,7 +63,7 @@ ROOT_URLCONF = "edu_blog.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ['%s/template/' % (PROJECT_DIR),],
+        "DIRS": ['%s/Template/' % (PROJECT_DIR),],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
