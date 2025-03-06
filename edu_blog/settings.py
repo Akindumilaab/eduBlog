@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
 
 ROOT_URLCONF = "edu_blog.urls"
@@ -83,18 +85,19 @@ WSGI_APPLICATION = "edu_blog.wsgi.application"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-        "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": 'edu_blog_db',
-        'USER': 'root',
-        'PASSWORD': 'abimbola',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS':  {
-            'autocommit':True,
+    'default':dj_database_url.config(default= "postgresql://edu_blog_db_user:7Fn2u6SlxWiTHtklGPucPX3oVdM1Zbpr@dpg-cv4pmbin91rc73e4k210-a.oregon-postgres.render.com/edu_blog_db")
+#         "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": 'edu_blog_db',
+#         'USER': 'root',
+#         'PASSWORD': 'abimbola',
+#         'HOST': '127.0.0.1',d
+#         'PORT': '3306',
+#         'OPTIONS':  {
+#             'autocommit':True,
             
-        }
-    }
+#         }
+#     }
 }
 
 
@@ -133,10 +136,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 4.
-STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'media/'
