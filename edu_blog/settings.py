@@ -28,7 +28,7 @@ SECRET_KEY = "django-insecure-&6l9m!w922&5q(ro4_grjb_y3#=5@qzj+sr6p9&-@n9)bq#m-x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://edublog-q843.onrender.com']
 
 
 # Application definition
